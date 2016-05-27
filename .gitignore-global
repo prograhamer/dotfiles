@@ -1,0 +1,8 @@
+ruby.tags
+python.tags
+.*.swp
+.*.swo
+.swo
+.swp
+.bundle
+.DS_Store

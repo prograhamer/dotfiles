@@ -1,0 +1,29 @@
+[alias]
+  scrumlog = log --graph --pretty=format:'%h -%d %s %cr <%an>' --all
+  scrum = "!git scrumlog --since=\"$([ $(date +%w) -eq 1 ] && date -v-3d +%F || date -v-1d +%F) 00:00:00\" --committer=\"`git config user.name`\""
+  cb = rev-parse --abbrev-ref HEAD
+  parent = "!git show-branch -a 2>/dev/null | grep '\\*' | sed -e 's/\\].*/\\]/' | grep -v $(git cb) | head -1 | sed -e 's/^.*\\[\\([^]]*\\)\\].*$/\\1/'"
+  rubocop = "!rubocop $(git --no-pager diff HEAD --name-only --relative | grep '\\.rb$')"
+  files = diff-tree --name-only --no-commit-id -r
+  co = checkout
+  ci = commit
+  cp = cherry-pick
+  st = status
+  di = diff --cached
+  ss = stash save
+  sp = stash pop
+  sl = stash list
+  sup = !git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)
+[user]
+	name = Graham Brereton
+	email = graham.brereton@thescore.com
+[core]
+  excludesfile = /Users/gbrereton/.gitignore-global
+  pager = view -
+[push]
+  default = simple
+[color]
+  ui = false
+  status = true
+[diff]
+  algorithm = minimal
