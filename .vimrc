@@ -20,6 +20,8 @@ vnoremap ! :s/^#//g <bar> :noh
 
 nnoremap <leader>d :!git diff HEAD %
 nnoremap <leader>h :noh
+nnoremap <leader>a :!git add %
+nnoremap <leader>b :!git blame %
 
 autocmd FileType ruby nnoremap <leader>r :!rubocop %
 autocmd FileType ruby nnoremap <leader>l :execute "!rspec " . expand("%") . ":" . line(".")

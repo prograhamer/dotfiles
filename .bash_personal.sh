@@ -34,3 +34,13 @@ alias la='ls -Al'
 alias view='vim -MR'
 alias js='python -m json.tool'
 alias grep='grep --color=auto --exclude ".*.swp" --exclude ".*.swo" --exclude "ruby.tags" --exclude "python.tags"'
+alias ans='pushd ~/Code/ansible-playbooks'
+
+function aws_cpr() {
+  if [ -z "$1" ] || [ -z "$2" ]; then
+    echo "Usage: $0 <Source path> <Include pattern>"
+    return
+  fi
+
+  aws s3 cp "$1" . --recursive --exclude '*' --include "$2"
+}
