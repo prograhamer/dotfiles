@@ -12,6 +12,8 @@ set tags+=ruby.tags,python.tags
 set completeopt=menu,preview
 set hlsearch
 
+autocmd FileType Makefile set noexpandtab
+
 autocmd FileType python set ts=4
 autocmd FileType python set sw=4
 
