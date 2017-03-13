@@ -16,11 +16,8 @@
   sl = stash list
   sup = !git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)
   alias = config --get-regexp ^alias\\.
-[user]
-	name = Graham Brereton
-	email = graham.brereton@thescore.com
 [core]
-  excludesfile = /Users/gbrereton/.gitignore-global
+  excludesfile = ~/.gitignore-global
   pager = view -
 [push]
   default = simple
@@ -29,3 +26,5 @@
   status = true
 [diff]
   algorithm = minimal
+[include]
+  path = ~/.gitconfig-user

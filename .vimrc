@@ -19,6 +19,8 @@ highlight BadWhitespace ctermbg=red guibg=red
 match BadWhitespace /\(\t\|\s\+\%#\@<!$\)/
 autocmd InsertLeave * redraw!
 
+autocmd FileType Makefile set noexpandtab
+
 autocmd FileType python set ts=4
 autocmd FileType python set sw=4
 
