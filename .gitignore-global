@@ -6,3 +6,4 @@ python.tags
 .swp
 .bundle
 .DS_Store
+.byebug_history
