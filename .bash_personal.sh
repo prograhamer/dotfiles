@@ -61,3 +61,12 @@ function aws_cpr() {
 
   aws s3 cp "$1" . --recursive --exclude '*' --include "$2"
 }
+
+function update_ruby_tags() {
+  paths=$(
+    for f in $(find . -name Gemfile); do
+      (cd "$(dirname "$f")" && (bundle check || bundle install) >/dev/null 2>&1 && bundle list --paths);
+    done | sort -u
+  )
+  ctags -R --languages=ruby --exclude=.git --exclude=log --exclude=vendor --exclude=vendor -f ruby.tags . $paths
+}
