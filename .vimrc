@@ -8,12 +8,14 @@ syntax on
 set ruler
 execute pathogen#infect()
 set tags+=./ruby.tags;
-set completeopt=menu,preview
+set completeopt=menu,preview,longest
 set hlsearch
 set nomodeline
 
 colo solarized
 set background=light
+
+set rtp+=/usr/local/opt/fzf
 
 highlight BadWhitespace ctermbg=red guibg=red
 match BadWhitespace /\(\t\|\s\+\%#\@<!$\)/
@@ -31,6 +33,7 @@ nnoremap <leader>d :!git diff HEAD %
 nnoremap <leader>h :noh
 nnoremap <leader>a :!git add %
 nnoremap <leader>b :!git blame %
+nnoremap <leader>f :FZF
 
 autocmd FileType ruby nnoremap <leader>r :!bundle exec rubocop %
 autocmd FileType ruby nnoremap <leader>l :execute "!bundle exec rspec " . expand("%") . ":" . line(".")
