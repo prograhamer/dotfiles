@@ -1,12 +1,13 @@
 [alias]
   scrumlog = log --graph --pretty=format:'%h -%d %s %cr <%an>' --all
-  scrum = "!git scrumlog --since=\"$([ $(date +%w) -eq 1 ] && date -v-3d +%F || date -v-1d +%F) 00:00:00\" --committer=\"`git config user.name`\""
+  megascrum = "!for dir in $(find ~/Code -name .git -exec dirname {} \\;); do (cd \"$dir\" && git --no-pager scrum); done 2>/dev/null | $(git config --get core.pager)"
+  scrum = "!git scrumlog --since=\"$([ $(date +%w) -eq 1 ] && date -d '-3 days' +%F || date -d '-1 day' +%F) 00:00:00\" --committer=\"`git config user.name`\""
   cb = rev-parse --abbrev-ref HEAD
   parent = "!git show-branch -a 2>/dev/null | grep '\\*' | sed -e 's/\\].*/\\]/' | grep -v $(git cb) | head -1 | sed -e 's/^.*\\[\\([^]]*\\)\\].*$/\\1/'"
   rubocop = "!rubocop $(git --no-pager files --diff-filter=ACMRTU | grep '\\.rb$' | grep -v 'db\\/schema\\.rb')"
   files = !git --no-pager diff master... --name-only --relative
   co = checkout
-  ci = commit
+  ci = commit -v
   cp = cherry-pick
   st = status
   stu = status --untracked=no
@@ -16,6 +17,7 @@
   sl = stash list
   sup = !git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)
   alias = config --get-regexp ^alias\\.
+  ou = "!$EDITOR $(git diff --diff-filter=AMU --name-only --relative)"
 [core]
   excludesfile = ~/.gitignore-global
   pager = view -
