@@ -1,3 +1,5 @@
+export PATH="/Users/$(whoami)/bin:/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+
 CYAN="\[$(tput setaf 6)\]"
 GREEN="\[$(tput setaf 2)\]"
 RED="\[$(tput setaf 1)\]"
@@ -21,12 +23,27 @@ function git_status() {
       STAR="*"
     fi
 
-    echo ":$GITC$(git rev-parse --abbrev-ref HEAD)$STAR$CRESET"
+    branch=$(git rev-parse --abbrev-ref HEAD)
+    if [[ ${#branch} -ge 30 ]]; then
+      branch="${branch:0:27}..."
+    fi
+
+    echo ":$GITC$branch$STAR$CRESET"
   fi
 }
 
+function path() {
+  path=${PWD/#$HOME/'~'}
+  if [[ ${#path} -ge 30 ]];then
+    path=${path: -27}
+    path=".../${path#*\/}"
+  fi
+
+  echo $path
+}
+
 function set_prompt() {
-  export PS1="$(exit_status)$(date +%H%M) $CYAN\w$CRESET$(git_status)> "
+  export PS1="$(exit_status)$(date +%H%M) $CYAN$(path)$CRESET$(git_status)> "
 }
 
 export PROMPT_COMMAND="set_prompt"
@@ -43,7 +60,6 @@ alias la='ls -Al'
 alias view='vim -MR'
 alias js='python -m json.tool'
 alias grep='grep --color=auto --exclude ".*.swp" --exclude ".*.swo" --exclude "ruby.tags" --exclude "python.tags"'
-alias ans='pushd ~/Code/ansible-playbooks'
 alias be='bundle exec'
 alias espresso='caffeinate -disu -w 1'
 alias melatonin='/System/Library/CoreServices/"Menu Extras"/User.menu/Contents/Resources/CGSession -suspend'
@@ -68,5 +84,5 @@ function update_ruby_tags() {
       (cd "$(dirname "$f")" && (bundle check || bundle install) >/dev/null 2>&1 && bundle list --paths);
     done | sort -u
   )
-  ctags -R --languages=ruby --exclude=.git --exclude=log --exclude=vendor --exclude=vendor -f ruby.tags . $paths
+  ctags -R --languages=ruby --exclude=.git --exclude=log --exclude=vendor -f ruby.tags . $paths
 }
