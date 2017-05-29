@@ -18,6 +18,8 @@
   sup = !git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)
   alias = config --get-regexp ^alias\\.
   ou = "!$EDITOR $(git diff --diff-filter=AMU --name-only --relative)"
+  mergepick = "! branch=$(git branch | sed -e 's/^[\\* ]*//' | fzf); [[ \"$?\" == 130 ]] || git merge \"$branch\""
+  die = "! f() { git files | grep -v \"$1\" | xargs git di --; }; f"
 [core]
   excludesfile = ~/.gitignore-global
   pager = view -
@@ -30,3 +32,5 @@
   algorithm = minimal
 [include]
   path = ~/.gitconfig-user
+[rebase]
+  instructionFormat = "%s [%an] (%ar)"
