@@ -57,6 +57,7 @@ export PYTHONDONTWRITEBYTECODE=1
 
 alias ll='ls -l'
 alias la='ls -Al'
+alias rm='rm -I'
 alias view='vim -MR'
 alias js='python -m json.tool'
 alias grep='grep --color=auto --exclude ".*.swp" --exclude ".*.swo" --exclude "ruby.tags" --exclude "python.tags"'
