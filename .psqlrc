@@ -1,0 +1,4 @@
+-- Set expanded output to automatic
+\x auto
+-- Set display value for NULL
+\pset null '(NULL)'
