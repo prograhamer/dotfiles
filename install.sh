@@ -2,6 +2,8 @@ set -eu
 
 DIRNAME=$(pwd)
 
+git submodule update --init
+
 for f in $(ls -A | grep  '^\.' | grep -v '^\.git$'); do
   ln -nsf "$DIRNAME/$f" "$HOME/$f"
 done
