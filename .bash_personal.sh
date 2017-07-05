@@ -44,6 +44,7 @@ function path() {
 
 function set_prompt() {
   export PS1="$(exit_status)$(date +%H%M) $CYAN$(path)$CRESET$(git_status)> "
+  echo -ne "\033]0;$(whoami)@$(hostname -f)\007"
 }
 
 export PROMPT_COMMAND="set_prompt"
