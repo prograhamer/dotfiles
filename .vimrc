@@ -14,7 +14,7 @@ set nomodeline
 
 colo elflord
 
-set rtp+=/usr/local/opt/fzf
+set rtp+=~/.vim/fzf
 
 highlight BadWhitespace ctermbg=red guibg=red
 match BadWhitespace /\(\t\|\s\+\%#\@<!$\)/
