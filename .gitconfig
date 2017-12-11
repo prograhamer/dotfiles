@@ -17,7 +17,7 @@
   sl = stash list
   sup = !git push --set-upstream origin $(git rev-parse --abbrev-ref HEAD)
   alias = config --get-regexp ^alias\\.
-  ou = "!$EDITOR $(git diff --diff-filter=AMU --name-only --relative)"
+  ou = "! git diff --diff-filter=AMU --name-only --relative -z | uniq -z | xargs -0 xargs bash -c '</dev/tty \"$EDITOR\" \"$@\"' editor"
   mergepick = "! branch=$(git branch | sed -e 's/^[\\* ]*//' | fzf); [[ \"$?\" == 130 ]] || git merge \"$branch\""
   die = "! f() { git --no-pager di --name-only --relative | grep -v \"$1\" | xargs git di --; }; f"
   upstream = rev-parse --abbrev-ref --symbolic-full-name @{upstream}
