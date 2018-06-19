@@ -14,7 +14,7 @@ set nomodeline
 
 colo elflord
 
-set rtp+=~/.vim/fzf
+set rtp+=/usr/local/opt/fzf
 
 highlight BadWhitespace ctermbg=red guibg=red
 match BadWhitespace /\(\t\|\s\+\%#\@<!$\)/
@@ -39,6 +39,7 @@ autocmd FileType ruby nnoremap <leader>l :execute "!bundle exec rspec " . expand
 autocmd FileType ruby nnoremap <leader>t :!bundle exec rspec %
 autocmd FileType python let g:indentLine_enabled = 1
 autocmd FileType python nnoremap <leader>t :!py.test %
+autocmd FileType javascript nnoremap <leader>r :!yarn run eslint %
 
 set pastetoggle=<leader>p
 
