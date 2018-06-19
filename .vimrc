@@ -12,7 +12,8 @@ set completeopt=menu,preview,longest
 set hlsearch
 set nomodeline
 
-colo elflord
+set background=light
+colo solarized
 
 set rtp+=/usr/local/opt/fzf
 
