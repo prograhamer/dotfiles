@@ -6,7 +6,7 @@ git submodule update --init
 
 (cd .vim/fzf && yes n | ./install)
 
-for f in $(ls -A | grep  '^\.' | grep -v '^\.git$'); do
+for f in $(ls -A | grep  '^\.' | grep -Ev '^\.(config|git)$'); do
   ln -nsf "$DIRNAME/$f" "$HOME/$f"
 done
 
