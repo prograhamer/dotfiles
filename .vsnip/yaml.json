@@ -1,0 +1,14 @@
+{
+  "source.yaml": {
+    "configmap": {
+      "prefix": "config",
+      "body": "apiVersion: v1\nkind: ConfigMap\nmetadata:\n  name: ${1:name}\n  namespace: ${2:default}\ndata:\n  ${3:key}:",
+      "description": "Kubernetes ConfigMap"
+    },
+    "secret": {
+      "prefix": "secret",
+      "body": "apiVersion: v1\nkind: Secret\nmetadata:\n  name: ${1:name}\n  namespace: ${2:default}\ndata:\n  ${3:key}:",
+      "description": "Kubernetes Secret"
+    }
+  }
+}

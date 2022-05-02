@@ -5,7 +5,7 @@ set encoding=UTF-8
 filetype off
 syntax on
 
-set ts=2 sts=2 sw=2
+set ts=3 sts=3 sw=3
 set expandtab
 
 set nobackup
@@ -18,7 +18,6 @@ set noshowmode
 set hlsearch
 set cursorline
 set number
-set laststatus
 set ruler
 set autoindent
 set mouse=""
@@ -33,44 +32,169 @@ let g:go_highlight_fields = 1
 let g:go_auto_type_info = 1
 
 call plug#begin()
-" General
+" Look & Feel
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-fugitive'
 Plug 'NLKNguyen/papercolor-theme'
-Plug 'SirVer/ultisnips'
-Plug 'mhinz/vim-signify'
+Plug 'ryanoasis/vim-devicons'
+
+Plug 'preservim/nerdtree'
+
+" Comments
+Plug 'tpope/vim-commentary'
+
+" Git Integration
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+
+" Telescope setup
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+
+" Autocompletion & Code Intelligence
+Plug 'neovim/nvim-lspconfig'
+Plug 'hrsh7th/cmp-nvim-lsp'
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/nvim-cmp'
+
+" Snippets
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
+Plug 'hrsh7th/cmp-vsnip'
 
 " Go
 Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'golang/vscode-go'
 Plug 'AndrewRadev/splitjoin.vim'
 
 " Kubernetes
 Plug 'andrewstuart/vim-kubernetes'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
 call plug#end()
 
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_symbols.maxlinenr = ' '
-let g:airline_symbols.colnr = 'C:'
+let g:airline_powerline_fonts = 1
 let g:airline_theme='papercolor'
 colorscheme PaperColor
 
-autocmd FileType go set noexpandtab ts=3 sts=3 sw=3
-autocmd FileType Makefile set noexpandtab
+set completeopt=menu,menuone,noselect
 
-nmap <C-P> :FZF<CR>
-nnoremap <silent> <leader>d :!git diff HEAD %<CR>
+lua <<EOF
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+end
+
+local feedkey = function(key, mode)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+end
+
+
+local cmp = require('cmp')
+cmp.setup {
+    snippet = {
+
+        expand = function(args) vim.fn["vsnip#anonymous"](args.body) end
+    },
+    mapping = cmp.mapping.preset.insert({
+      ["<Tab>"] = cmp.mapping(function(fallback)
+        if cmp.visible() then
+          cmp.select_next_item()
+        elseif vim.fn["vsnip#available"](1) == 1 then
+          feedkey("<Plug>(vsnip-expand-or-jump)", "")
+        elseif has_words_before() then
+          cmp.complete()
+        else
+          fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+        end
+      end, { "i", "s" }),
+
+      ["<S-Tab>"] = cmp.mapping(function()
+        if cmp.visible() then
+          cmp.select_prev_item()
+        elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+          feedkey("<Plug>(vsnip-jump-prev)", "")
+        end
+      end, { "i", "s" }),
+      ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-e>'] = cmp.mapping.abort(),
+      ['<CR>'] = cmp.mapping.confirm({ select = fale }),
+    }),
+    sources = cmp.config.sources({
+        { name = 'nvim_lsp' },
+        { name = 'vsnip' },
+    }, {
+        { name = 'buffer' },
+    })
+   -- ... Your other configuration ...
+}
+
+local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+
+-- set up lspconfig
+local opts = { noremap=true, silent=true }
+vim.api.nvim_set_keymap('n', '<space>e', '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
+vim.api.nvim_set_keymap('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
+vim.api.nvim_set_keymap('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
+vim.api.nvim_set_keymap('n', '<space>q', '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
+
+local telescope = require('telescope.builtin')
+
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  -- Enable completion triggered by <c-x><c-o>
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua require(\'telescope.builtin\').lsp_definitions()<cr>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua require(\'telescope.builtin\').lsp_implementations()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr', '<cmd>lua require(\'telescope.builtin\').lsp_references()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gR', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
+end
+
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = { 'gopls' }
+for _, lsp in pairs(servers) do
+  require('lspconfig')[lsp].setup {
+    capabilities = capabilities,
+    on_attach = on_attach,
+    flags = {
+      -- This will be the default in neovim 0.7+
+      debounce_text_changes = 150,
+    }
+  }
+end
+EOF
+
+au FileType yaml set expandtab ts=2 sts=2 sw=2
+
+" Common git operations
+nnoremap <silent> <leader>a :Git add %<CR>
+nnoremap <silent> <leader>d :Gvdiffsplit HEAD<CR>
+
+" Clear highlighting
 nnoremap <silent> <leader>h :noh<CR>
-nnoremap <silent> <leader>a :!git add %<CR>
 
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                              \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-inoremap <silent><expr> <c-space> coc#refresh()
+nnoremap <C-P> <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap S <cmd>lua require('telescope.builtin').buffers()<cr>
 
+let g:NERDTreeQuitOnOpen = 1
+nnoremap <C-n> <cmd>NERDTreeFocus<CR>
+
+nnoremap gfs <cmd>GoFillStruct<CR>
+
+" base64 encode selected region
+vnoremap <leader>64 y:let @"=system('base64 -w0', @")<cr>gv""P
