@@ -1,13 +1,15 @@
-set -eu
+#!/bin/bash
+
+set -uf
 
 DIRNAME=$(pwd)
 
-git submodule update --init
-
-(cd .vim/fzf && yes n | ./install)
-
 for f in $(ls -A | grep  '^\.' | grep -Ev '^\.(config|git)$'); do
-  ln -nsf "$DIRNAME/$f" "$HOME/$f"
+  ln -vhs "$DIRNAME/$f" "$HOME/$f"
+done
+
+for f in $(ls -A .config); do
+  ln -vhs "${DIRNAME}/.config/${f}" "$HOME/.config/${f}"
 done
 
 if [ ! -s ~/.gitconfig-user ]; then

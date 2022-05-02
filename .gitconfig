@@ -25,7 +25,7 @@
   do-over = "! f() { git fetch && git reset --hard $(git upstream) && git merge ${1:--}; }; f"
 [core]
   excludesfile = ~/.gitignore-global
-  pager = view -
+  pager = nvim -MR -
 [push]
   default = simple
 [color]
@@ -35,6 +35,8 @@
   algorithm = minimal
 [include]
   path = ~/.gitconfig-user
+[init]
+  defaultBranch = main
 [rebase]
   instructionFormat = "%s [%an] (%ar)"
 [user]
