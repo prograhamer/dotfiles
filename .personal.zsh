@@ -1,3 +1,7 @@
+export PATH="${PATH}:${HOME}/.local/bin"
+
+export EDITOR='nvim'
+
 # Gotta have them vi keys
 bindkey -v
 
