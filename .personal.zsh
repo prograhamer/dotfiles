@@ -1,6 +1,10 @@
 export GOPATH="${HOME}/go"
 export PATH="${PATH}:${HOME}/.local/bin:${GOPATH}/bin"
 
+if [[ "$(uname -s)" = "Darwin" ]]; then
+  export PATH="/usr/local/opt/coreutils/libexec/gnubin:$PATH"
+fi
+
 export EDITOR='nvim'
 
 # Gotta have them vi keys

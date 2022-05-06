@@ -189,11 +189,12 @@ nnoremap <silent> <leader>d :Gvdiffsplit HEAD<CR>
 " Clear highlighting
 nnoremap <silent> <leader>h :noh<CR>
 
+nnoremap <C-L> <cmd>lua require('telescope.builtin').live_grep()<cr>
 nnoremap <C-P> <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap S <cmd>lua require('telescope.builtin').buffers()<cr>
 
 let g:NERDTreeQuitOnOpen = 1
-nnoremap <C-n> <cmd>NERDTreeFocus<CR>
+nnoremap <C-n> <cmd>NERDTreeToggle<CR>
 
 nnoremap gfs <cmd>GoFillStruct<CR>
 
