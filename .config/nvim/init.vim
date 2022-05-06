@@ -180,6 +180,7 @@ end
 EOF
 
 au FileType yaml set expandtab ts=2 sts=2 sw=2
+au BufNewFile,BufRead Tiltfile set filetype=python
 
 " Common git operations
 nnoremap <silent> <leader>a :Git add %<CR>
