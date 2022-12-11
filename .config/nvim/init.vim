@@ -5,9 +5,7 @@ set encoding=UTF-8
 filetype off
 syntax on
 
-set ts=3 sts=3 sw=3
-set expandtab
-
+set ts=2 sts=2 sw=2
 set nobackup
 set nowritebackup
 set nocompatible
@@ -30,6 +28,7 @@ set updatetime=200
 
 let g:go_highlight_fields = 1
 let g:go_auto_type_info = 1
+let g:go_fmt_comman = 'gopls'
 
 call plug#begin()
 " Look & Feel
@@ -71,6 +70,12 @@ Plug 'AndrewRadev/splitjoin.vim'
 
 " Kubernetes
 Plug 'andrewstuart/vim-kubernetes'
+
+" Terraform
+Plug 'hashivim/vim-terraform'
+
+" XML :(
+Plug 'chrisbra/vim-xml-runtime'
 call plug#end()
 
 let g:airline_powerline_fonts = 1
@@ -166,20 +171,26 @@ end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { 'gopls' }
-for _, lsp in pairs(servers) do
-  require('lspconfig')[lsp].setup {
-    capabilities = capabilities,
-    on_attach = on_attach,
-    flags = {
-      -- This will be the default in neovim 0.7+
-      debounce_text_changes = 150,
-    }
-  }
-end
+require('lspconfig').gopls.setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+  settings = {
+    gopls = {
+      gofumpt = true
+    },
+  },
+})
+
+require('lspconfig').golangci_lint_ls.setup({
+  capabilities = capabilities,
+  on_attach = on_attach,
+})
 EOF
 
 au FileType yaml set expandtab ts=2 sts=2 sw=2
+au FileType go set ts=3 sts=3 sw=3
+au FileType xml set expandtab nofixendofline noeol
+au FileType xsd set expandtab nofixendofline noeol
 au BufNewFile,BufRead Tiltfile set filetype=python
 
 " Common git operations
@@ -200,3 +211,4 @@ nnoremap gfs <cmd>GoFillStruct<CR>
 
 " base64 encode selected region
 vnoremap <leader>64 y:let @"=system('base64 -w0', @")<cr>gv""P
+vnoremap <leader>46 y:let @"=system('base64 -d', @")<cr>gv""P

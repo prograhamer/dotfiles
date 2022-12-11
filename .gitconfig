@@ -10,6 +10,7 @@
   co = checkout
   ci = commit -v
   cp = cherry-pick
+  fp = push --force-with-lease
   st = status
   stu = status --untracked=no
   di = diff --cached
@@ -28,6 +29,7 @@
   pager = nvim -MR -
 [push]
   default = simple
+  autoSetupRemote = true
 [color]
   ui = false
   status = true
@@ -39,6 +41,3 @@
   defaultBranch = main
 [rebase]
   instructionFormat = "%s [%an] (%ar)"
-[user]
-  name = Graham Brereton
-  email = prograhamer@users.noreply.github.com

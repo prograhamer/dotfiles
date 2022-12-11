@@ -15,11 +15,12 @@ set $screenshot gnome-screenshot
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
-font pango:monospace 8
+font pango:FiraCode Nerd Font 11
 
 # This font is widely installed, provides lots of unicode glyphs, right-to-left
 # text rendering and scalability on retina/hidpi displays (thanks to pango).
 #font pango:DejaVu Sans Mono 8
+exec_always --no-startup-id $HOME/.config/i3/polybar.sh
 
 # Use pactl to adjust volume in PulseAudio.
 set $refresh_i3status killall -SIGUSR1 i3status
@@ -98,14 +99,14 @@ bindsym $mod+a focus parent
 # We use variables to avoid repeating the names in multiple places.
 set $ws1 "1:Firefox"
 set $ws2 "2:Dev"
-set $ws3 "3:Notes"
+set $ws3 "3"
 set $ws4 "4"
 set $ws5 "5"
-set $ws6 "6"
+set $ws6 "6:Notes"
 set $ws7 "7"
-set $ws8 "8:Zoom"
-set $ws9 "9:Slack"
-set $ws10 "10:Zoom Controls"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
 
 # switch to workspace
 bindsym $mod+1 workspace number $ws1
@@ -148,18 +149,15 @@ workspace $ws9 output $laptop_display
 workspace $ws10 output $laptop_display
 
 # Bind applications to specific workspaces
-assign [class="Firefox" class="Navigator"] $ws1
+assign [class="firefox" class="Navigator"] $ws1
 assign [class="(?i)slack"] $ws9
-assign [class="(?i)zoom" title="Zoom (Meeting|Webinar)"] $ws10
-assign [class="(?i)zoom" title="^Zoom$"] $ws8
-assign [class="(?i)joplin"] $ws3
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
 # restart i3 inplace (preserves your layout/session, can be used to upgrade i3)
 bindsym $mod+Shift+r restart
 # exit i3 (logs you out of your X session)
-bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcut. Do you really want to exit i3? This will end your X session.' -B 'Yes, exit i3' 'i3-msg exit'"
+bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'Powering off...' -B 'Continue' 'systemctl poweroff'"
 
 bindsym $mod+Tab workspace back_and_forth
 
@@ -191,20 +189,14 @@ mode "resize" {
 bindsym $mod+r mode "resize"
 
 mode "ham" {
-        bindsym 1 exec "$HOME/.screenlayout/laptop-display.sh", mode "default"
-        bindsym 2 exec "$HOME/.screenlayout/multi-monitor.sh", mode "default"
-        bindsym 3 exec "$HOME/.screenlayout/external-display.sh", mode "default"
-
-        bindsym h exec "$HOME/.config/i3/connect-headphones.sh", mode "default"
-
         bindsym l exec $i3lock, mode "default"
 
         bindsym s exec $screenshot -i, mode "default"
-        bindsym Shift+s exec $screenshot -Bw, mode "default"
 
-        # Zoom appears to change the window title after initial placement or something, keybindings to put things in their place
-        bindsym z exec i3-msg '[class="(?i)zoom" title="Zoom (Meeting|Webinar)"]' move to workspace $ws10, exec i3-msg '[class="(?i)zoom" title="^Zoom$"]' move to workspace $ws8, mode "default"
-        bindsym Shift+z exec i3-msg '[class="(?i)zoom" title="^Zoom$"]' move to workspace $ws10, mode "default"
+        bindsym Prior exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +5% && $refresh_i3status
+        bindsym Next exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -5% && $refresh_i3status
+
+        bindsym Pause exec --no-startup-id systemctl suspend && $i3lock, mode "default"
 
         # back to normal: Enter or Escape
         bindsym Return mode "default"
@@ -213,19 +205,7 @@ mode "ham" {
 
 bindsym $mod+m mode "ham"
 
-# Start i3bar to display a workspace bar (plus the system information i3status
-# finds out, if available)
-bar {
-        position top
-        font pango:FiraCode Nerd Font 11
-        status_command python3 ~/.local/lib/python3.9/site-packages/powerline/bindings/i3/powerline-i3.py
-
-        colors {
-          focused_workspace #4c7899 #AF005F #ffffff
-        }
-}
-
-default_border pixel 2
+default_border pixel 3
 hide_edge_borders smart
 
 client.focused          #4c7899 #285577 #ffffff #AF005F   #AF005F
