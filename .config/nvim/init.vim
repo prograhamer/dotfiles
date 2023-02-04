@@ -68,6 +68,9 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 Plug 'golang/vscode-go'
 Plug 'AndrewRadev/splitjoin.vim'
 
+" Rust
+Plug 'simrat39/rust-tools.nvim'
+
 " Kubernetes
 Plug 'andrewstuart/vim-kubernetes'
 
@@ -156,6 +159,7 @@ local on_attach = function(client, bufnr)
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd', '<cmd>lua require(\'telescope.builtin\').lsp_definitions()<cr>', opts)
+	vim.api.nvim_buf_set_keymap(bufnr, 'n', '', '<cmd>lua require(\'telescope.builtin\').lsp_definitions()<cr>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi', '<cmd>lua require(\'telescope.builtin\').lsp_implementations()<CR>', opts)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
@@ -169,9 +173,17 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_keymap(bufnr, 'n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 end
 
--- Use a loop to conveniently call 'setup' on multiple servers and
--- map buffer local keybindings when the language server attaches
-require('lspconfig').gopls.setup({
+local rt = require("rust-tools")
+
+rt.setup({
+  server = {
+    on_attach = on_attach
+  },
+})
+
+local lspconfig = require('lspconfig')
+
+lspconfig.gopls.setup({
   capabilities = capabilities,
   on_attach = on_attach,
   settings = {
@@ -181,10 +193,23 @@ require('lspconfig').gopls.setup({
   },
 })
 
-require('lspconfig').golangci_lint_ls.setup({
-  capabilities = capabilities,
-  on_attach = on_attach,
-})
+local servers = { 'pylsp', 'golangci_lint_ls' }
+for _, lsp in pairs(servers) do
+  lspconfig[lsp].setup {
+    capabilities = capabilities,
+    on_attach = on_attach,
+  }
+end
+
+local in_git_repo, err = vim.loop.fs_stat(vim.loop.cwd() .. "/.git")
+
+find_files = function()
+   if in_git_repo then
+      return require('telescope.builtin').git_files()
+   else
+      return require('telescope.builtin').find_files()
+   end
+end
 EOF
 
 au FileType yaml set expandtab ts=2 sts=2 sw=2
@@ -201,7 +226,7 @@ nnoremap <silent> <leader>d :Gvdiffsplit HEAD<CR>
 nnoremap <silent> <leader>h :noh<CR>
 
 nnoremap <C-L> <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap <C-P> <cmd>lua require('telescope.builtin').find_files()<cr>
+nnoremap <C-P> <cmd>lua find_files()<cr>
 nnoremap S <cmd>lua require('telescope.builtin').buffers()<cr>
 
 let g:NERDTreeQuitOnOpen = 1
