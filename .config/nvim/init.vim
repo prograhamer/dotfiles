@@ -39,6 +39,7 @@ Plug 'NLKNguyen/papercolor-theme'
 Plug 'ryanoasis/vim-devicons'
 
 Plug 'preservim/nerdtree'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " Comments
 Plug 'tpope/vim-commentary'
@@ -177,9 +178,17 @@ end
 
 local rt = require("rust-tools")
 
+local rt_on_attach = function(client, bufnr)
+	-- Hover actions
+	vim.keymap.set("n", "<C-space>", rt.hover_actions.hover_actions, { buffer = bufnr })
+	-- Code action groups
+	vim.keymap.set("n", "<Leader>a", rt.code_action_group.code_action_group, { buffer = bufnr })
+	on_attach(client, bufnr)
+end
+
 rt.setup({
   server = {
-    on_attach = on_attach
+    on_attach = rt_on_attach,
   },
 })
 
@@ -202,20 +211,11 @@ for _, lsp in pairs(servers) do
     on_attach = on_attach,
   }
 end
-
-local in_git_repo, err = vim.loop.fs_stat(vim.loop.cwd() .. "/.git")
-
-find_files = function()
-   if in_git_repo then
-      return require('telescope.builtin').git_files()
-   else
-      return require('telescope.builtin').find_files()
-   end
-end
 EOF
 
 au FileType yaml set expandtab ts=2 sts=2 sw=2
 au FileType go set ts=3 sts=3 sw=3
+au FileType asm set ts=3 sts=3 sw=3
 au FileType xml set expandtab nofixendofline noeol
 au FileType xsd set expandtab nofixendofline noeol
 au BufNewFile,BufRead Tiltfile set filetype=python
@@ -228,7 +228,7 @@ nnoremap <silent> <leader>d :Gvdiffsplit HEAD<CR>
 nnoremap <silent> <leader>h :noh<CR>
 
 nnoremap <C-L> <cmd>lua require('telescope.builtin').live_grep()<cr>
-nnoremap <C-P> <cmd>lua find_files()<cr>
+nnoremap <C-P> <cmd>lua require('telescope.builtin').find_files()<cr>
 nnoremap S <cmd>lua require('telescope.builtin').buffers()<cr>
 
 let g:NERDTreeQuitOnOpen = 1
