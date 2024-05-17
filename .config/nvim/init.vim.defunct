@@ -31,6 +31,9 @@ let g:go_auto_type_info = 1
 let g:go_fmt_command = 'gopls'
 let g:rustfmt_autosave = 1
 
+let b:ale_fixers = ['prettier', 'eslint']
+let g:ale_fix_on_save = 1
+
 call plug#begin()
 " Look & Feel
 Plug 'vim-airline/vim-airline'
@@ -43,6 +46,7 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
 " Comments
 Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-abolish'
 
 " Git Integration
 Plug 'tpope/vim-fugitive'
@@ -73,6 +77,11 @@ Plug 'AndrewRadev/splitjoin.vim'
 " Rust
 Plug 'rust-lang/rust.vim'
 Plug 'simrat39/rust-tools.nvim'
+
+" JS
+Plug 'pangloss/vim-javascript'
+Plug 'HerringtonDarkholme/yats.vim'
+Plug 'dense-analysis/ale'
 
 " Kubernetes
 Plug 'andrewstuart/vim-kubernetes'
@@ -204,7 +213,25 @@ lspconfig.gopls.setup({
   },
 })
 
-local servers = { 'pylsp', 'golangci_lint_ls' }
+lspconfig.pylsp.setup({
+	capabilities = capabilities,
+	on_attach = on_attach,
+	settings = {
+		pylsp = {
+			configurationSources = {"flake8", "pycodestyle"},
+			plugins = {
+				flake8 = {
+					maxLineLength = 119,
+				},
+				pycodestyle = {
+					maxLineLength = 119,
+				},
+			},
+		},
+	},
+})
+
+local servers = { 'golangci_lint_ls' }
 for _, lsp in pairs(servers) do
   lspconfig[lsp].setup {
     capabilities = capabilities,
