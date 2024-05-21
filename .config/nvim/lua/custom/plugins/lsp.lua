@@ -29,6 +29,8 @@ return {
         gopls = {
           settings = {
             gopls = {
+              buildFlags = { "-tags=all" },
+              gofumpt = true,
               usePlaceholders = true,
             },
           },
@@ -57,9 +59,7 @@ return {
           capabilities = capabilities,
         }, {})
 
-        lspconfig[name].setup({
-          capabilities = capabilities,
-        })
+        lspconfig[name].setup(config)
       end
 
       vim.api.nvim_create_autocmd("LspAttach", {

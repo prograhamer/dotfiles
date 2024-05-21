@@ -25,5 +25,12 @@ function fish_greeting
 end
 
 function fish_right_prompt
-  string join '' -- (set_color green) (date "+%H:%M:%S") (set_color normal)
+  set -f date (date '+%H:%M:%S')
+
+  if command -q kubectl
+    set -f kube_context (kubectl config current-context 2>/dev/null || echo '[no context]')
+    string join '' -- (set_color purple) '⎈' $kube_context (set_color normal) ' ' (set_color green) $date (set_color normal)
+  else
+    string join '' -- (set_color green) $date (set_color normal)
+  end
 end

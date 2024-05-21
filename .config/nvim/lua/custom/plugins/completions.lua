@@ -52,9 +52,11 @@ return {
         end
       end, { "i", "s" })
 
-      local previousCompletion = cmp.mapping(function()
+      local previousCompletion = cmp.mapping(function(fallback)
         if cmp.visible() then
           cmp.select_prev_item()
+        else
+          fallback() -- The fallback function sends a already mapped key
         end
       end, { "i", "s" })
 
@@ -74,7 +76,7 @@ return {
           ['<C-f>'] = cmp.mapping.scroll_docs(4),
           ['<C-k>'] = cmp.mapping.complete(),
           ['<C-e>'] = cmp.mapping.abort(),
-          ['<CR>'] = cmp.mapping.confirm({ select = true }),
+          ['<CR>'] = cmp.mapping.confirm({ select = false }),
         },
         sorting = {
           priority_weight = 1.0,
