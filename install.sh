@@ -17,7 +17,7 @@ if [[ "${OS}" = "GNU/Linux" ]]; then
    if [[ ! -f "${FONT_DIR}/Fira Code Regular Nerd Font Complete Mono.ttf" ]]; then
      mkdir -p "${FONT_DIR}"
      pushd "${FONT_DIR}"
-     wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v2.1.0/FiraCode.zip"
+     wget "https://github.com/ryanoasis/nerd-fonts/releases/download/v3.2.1/FiraCode.zip"
      unzip FiraCode.zip
      rm FiraCode.zip
      popd
