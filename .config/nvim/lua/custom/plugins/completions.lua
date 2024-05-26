@@ -9,10 +9,6 @@ return {
     config = function()
       local cmp = require("cmp")
 
-      local feedkey = function(key, mode)
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-      end
-
       local lsp_kind_comparator = function(conf)
         local lsp_types = require("cmp.types").lsp
         return function(entry1, entry2)
@@ -39,7 +35,7 @@ return {
         if cmp.visible() then
           cmp.select_next_item()
         elseif vim.snippet.active({ direction = 1 }) then
-          feedkey('<cmd>lua vim.snippet.jump(1)<cr>', '')
+          vim.snippet.jump(1)
         else
           fallback() -- The fallback function sends a already mapped key
         end
@@ -48,6 +44,8 @@ return {
       local previousCompletion = cmp.mapping(function(fallback)
         if cmp.visible() then
           cmp.select_prev_item()
+        elseif vim.snippet.active({ direction = 1 }) then
+          vim.snippet.jump(-1)
         else
           fallback() -- The fallback function sends a already mapped key
         end

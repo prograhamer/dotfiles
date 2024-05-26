@@ -73,10 +73,19 @@ return {
 
           vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { buffer = 0 })
 
-          vim.keymap.set("n", "gds", function()
-            tele.lsp_document_symbols {}
+          vim.keymap.set("n", "gs", function()
+            tele.lsp_document_symbols {
+              symbols = { "function", "method", "constant", "class", "struct" },
+              symbol_width = 40,
+            }
           end, { buffer = 0 })
-          vim.keymap.set("n", "gr", tele.lsp_references, { buffer = 0 })
+
+          -- TODO: workaround for bug in telescope, jumps to the current reference rather than the sole other reference
+          --       in some circumstances due to inconsistent sorting of locations/items.
+          -- https://github.com/nvim-telescope/telescope.nvim/issues/3118
+          -- vim.keymap.set("n", "gr", tele.lsp_references, { buffer = 0 })
+          vim.keymap.set("n", "gr", function() tele.lsp_references { include_current_line = true } end, { buffer = 0 })
+
           vim.keymap.set("n", "gi", tele.lsp_implementations, { buffer = 0 })
         end,
       })
