@@ -25,6 +25,9 @@ function fish_greeting
 end
 
 function fish_right_prompt
+  # Save cursor position, and set cursor position so right prompt is on the first line of the multiline prompt
+  tput sc; tput cuu1; tput cuf 2
+
   set -f date (date '+%H:%M:%S')
 
   if command -q kubectl
@@ -33,4 +36,7 @@ function fish_right_prompt
   else
     string join '' -- (set_color green) $date (set_color normal)
   end
+
+  # Restore cursor position
+  tput rc
 end
