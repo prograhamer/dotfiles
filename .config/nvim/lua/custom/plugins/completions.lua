@@ -53,6 +53,7 @@ return {
 
 
       cmp.setup({
+        preselect = cmp.PreselectMode.None,
         snippet = {
           expand = function(args)
             vim.snippet.expand(args.body)
@@ -106,9 +107,6 @@ return {
             cmp.config.compare.locality,
             cmp.config.compare.score,
           },
-        },
-        completion = {
-          completeopt = "menu,menuone,noselect",
         },
         sources = cmp.config.sources(
           {
