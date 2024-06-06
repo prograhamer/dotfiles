@@ -1,0 +1,42 @@
+font:
+  size: 11
+
+  normal:
+    family: FiraCode Nerd Font
+    style: Regular
+
+colors:
+  draw_bold_text_with_bright_colors: true
+
+  bright:
+    black: "#7c8f8f"
+    blue: "#82aaff"
+    cyan: "#7fdbca"
+    green: "#21c7a8"
+    magenta: "#ae81ff"
+    red: "#ff5874"
+    white: "#d6deeb"
+    yellow: "#ecc48d"
+
+  cursor:
+    cursor: "#9ca1aa"
+    text: "#080808"
+
+  normal:
+    black: "#1d3b53"
+    blue: "#82aaff"
+    cyan: "#7fdbca"
+    green: "#a1cd5e"
+    magenta: "#c792ea"
+    red: "#fc514e"
+    white: "#a1aab8"
+    yellow: "#e3d18a"
+
+  primary:
+    background: "#011627"
+    bright_foreground: "#eeeeee"
+    foreground: "#bdc1c6"
+
+  selection:
+    background: "#b2ceee"
+    text: "#080808"
