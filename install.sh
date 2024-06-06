@@ -36,6 +36,9 @@ if [[ "${OS}" = "GNU/Linux" ]]; then
      ln -s ~/.local/opt/nvim-linux64/bin/nvim "${LOCAL_DIR}/bin/nvim"
      popd
    fi
+elif [[ "${OS}" = "Darwin" ]]; then
+  brew install font-fira-code-nerd-font font-fira-mono-nerd-font
+  brew install neovim
 fi
 
 for f in $(find . -maxdepth 1 -type f -name '.*'); do
